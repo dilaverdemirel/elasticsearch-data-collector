@@ -62,6 +62,12 @@ Syncronizasyon işlemlerini loglamak için kullanılır.
 |status                 | varchar(20)    | STARTED/COMPLETED/FAILED |
 |status_message         | clob           |            |
 
+## Eksikler
+
+[-] Db password encode edilecek
+
+
+
 ## End Points
 
 ### DataSourceController /data-sources

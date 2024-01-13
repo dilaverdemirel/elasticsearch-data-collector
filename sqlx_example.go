@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"eslasticsearchdatacollector/controllers"
+	"eslasticsearchdatacollector/dao"
 	"fmt"
 	"log"
 	"net"
@@ -11,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/elastic/go-elasticsearch/v7"
 	"github.com/elastic/go-elasticsearch/v7/esutil"
 	_ "github.com/go-sql-driver/mysql"
@@ -18,6 +22,9 @@ import (
 )
 
 func main() {
+
+	webApp := gin.Default()
+	dao.ConnectDatabase()
 
 	cfg := elasticsearch.Config{
 		Addresses: []string{
@@ -157,4 +164,14 @@ func main() {
 	indexer.Close(context.Background())
 
 	// check the error from rows
+
+	webApp.GET("/datasources", controllers.FindDatasources)       // new
+	webApp.GET("/datasources/:id", controllers.GetDatasourceById) // new
+	webApp.POST("/datasources", controllers.CreateDataSource)     // new
+
+	webApp.GET("/indices", controllers.FindIndices)           // new
+	webApp.GET("/indices/:id", controllers.GetDatasourceById) // new
+	webApp.POST("/indices", controllers.CreateIndex)          // new
+
+	webApp.Run()
 }
