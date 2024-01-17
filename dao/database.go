@@ -2,12 +2,15 @@ package dao
 
 import (
 	"eslasticsearchdatacollector/dao/model"
+	"log"
 
+	"github.com/jmoiron/sqlx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
+var datasource_map = make(map[string]sqlx.DB)
 
 func ConnectDatabase() {
 
@@ -23,4 +26,29 @@ func ConnectDatabase() {
 	}
 
 	DB = database
+}
+
+func ConnectDatabaseWithDefinedDatasource(datasource_id string) sqlx.DB {
+	var datasource model.Datasource
+	temp_datasource, ok := datasource_map[datasource_id]
+	if !ok {
+		DB.Where(&model.Datasource{ID: datasource_id}).Take(&datasource)
+
+		db, err := sqlx.Open(datasource.DriverName,
+			datasource.UserName+":"+datasource.DbPassword+
+				"@"+datasource.ConnectionString)
+		db.SetMaxIdleConns(int(datasource.MinIdle))
+		db.SetMaxOpenConns(int(datasource.MaxPoolSize))
+
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			datasource_map[datasource_id] = *db
+			temp_datasource = *db
+		}
+
+		return temp_datasource
+	}
+
+	return temp_datasource
 }

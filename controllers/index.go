@@ -27,6 +27,14 @@ func GetIndexById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": index})
 }
 
+func DeleteIndexById(c *gin.Context) {
+	id := c.Param("id")
+	var index model.Index
+	dao.DB.Where(&model.Index{ID: id}).Delete(&index)
+
+	c.JSON(http.StatusOK, gin.H{"data": index})
+}
+
 func CreateIndex(c *gin.Context) {
 	// Validate input
 	var input model.CreateIndexInput
@@ -49,5 +57,35 @@ func CreateIndex(c *gin.Context) {
 	}
 	dao.DB.Create(&index)
 
-	c.JSON(http.StatusOK, gin.H{"data": index})
+	c.JSON(http.StatusCreated, gin.H{"data": index})
+}
+
+func IndexScheduleDataSync(c *gin.Context) {
+	// Validate input
+	var input model.ScheduleIndexInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	dao.DB.Save(&model.Index{
+		ID:             input.IndexId,
+		CronExpression: input.CronExpression,
+		DocumentField:  input.DocumentIdField,
+		SyncType:       input.SyncType,
+	})
+
+	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: input.IndexId}).First})
+}
+
+func IndexUnscheduleDataSync(c *gin.Context) {
+	id := c.Param("id")
+
+	dao.DB.Save(&model.Index{
+		ID:             id,
+		CronExpression: "",
+		DocumentField:  "",
+	})
+
+	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: id}).First})
 }

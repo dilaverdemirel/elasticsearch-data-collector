@@ -28,3 +28,10 @@ type CreateIndexInput struct {
 	DataSourceId   string `json:"DataSourceId" binding:"required"`
 	DocumentField  string `json:"DocumentField"`
 }
+
+type ScheduleIndexInput struct {
+	CronExpression  string `json:"CronExpression" binding:"required"`
+	DocumentIdField string `json:"DocumentIdField" binding:"required"`
+	IndexId         string `json:"IndexId" binding:"required"`
+	SyncType        string `json:"SyncType" binding:"required"`
+}

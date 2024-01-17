@@ -169,9 +169,14 @@ func main() {
 	webApp.GET("/datasources/:id", controllers.GetDatasourceById) // new
 	webApp.POST("/datasources", controllers.CreateDataSource)     // new
 
-	webApp.GET("/indices", controllers.FindIndices)           // new
-	webApp.GET("/indices/:id", controllers.GetDatasourceById) // new
-	webApp.POST("/indices", controllers.CreateIndex)          // new
+	webApp.GET("/indices", controllers.FindIndices)                                         // new
+	webApp.GET("/indices/:id", controllers.GetDatasourceById)                               // new
+	webApp.POST("/indices", controllers.CreateIndex)                                        // new
+	webApp.DELETE("/indices", controllers.DeleteIndexById)                                  // new
+	webApp.PUT("/indices/:id/schedule-data-sync", controllers.IndexScheduleDataSync)        // new
+	webApp.DELETE("/indices/:id/unschedule-data-sync", controllers.IndexUnscheduleDataSync) // new
+
+	webApp.POST("/query-meta-data/preview", controllers.PreviewQueryMetaData) // new
 
 	webApp.Run()
 }
