@@ -14,13 +14,13 @@ var datasource_map = make(map[string]sqlx.DB)
 
 func ConnectDatabase() {
 
-	database, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/es-data-collector"), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/es-data-collector?parseTime=true"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
 
-	err = database.AutoMigrate(&model.Datasource{})
+	err = database.AutoMigrate(&model.Datasource{}, &model.Index{}, &model.SyncLog{})
 	if err != nil {
 		return
 	}

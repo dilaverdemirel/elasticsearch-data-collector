@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"eslasticsearchdatacollector/dao"
 	"eslasticsearchdatacollector/dao/model"
+	"eslasticsearchdatacollector/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -14,11 +14,7 @@ import (
 func FindDatasources(c *gin.Context) {
 	var filter model.Datasource
 	c.Bind(&filter)
-	fmt.Println("filter", filter)
-	var datasources []model.Datasource
-	dao.DB.Where(&filter).Find(&datasources)
-
-	c.JSON(http.StatusOK, gin.H{"data": datasources})
+	c.JSON(http.StatusOK, gin.H{"data": service.FindDatasources(&filter)})
 }
 
 func GetDatasourceById(c *gin.Context) {

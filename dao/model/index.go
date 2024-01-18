@@ -3,18 +3,18 @@ package model
 import "time"
 
 type Index struct {
-	ID                string    `json:"ID" gorm:"primary_key"`
-	Name              string    `json:"Name"`
-	Alias             string    `json:"Alias"`
-	Description       string    `json:"Description"`
-	Valid             bool      `json:"Valid"`
-	SqlQuery          string    `json:"SqlQuery"`
-	Scheduled         bool      `json:"Scheduled"`
-	CronExpression    string    `json:"CronExpression"`
-	LastExecutionTime time.Time `json:"LastExecutionTime"`
-	SyncType          string    `json:"SyncType"`
-	DataSourceId      string    `json:"DataSourceId"`
-	DocumentField     string    `json:"DocumentField"`
+	ID                string     `json:"ID" gorm:"primary_key"`
+	Name              string     `json:"Name"`
+	Alias             string     `json:"Alias"`
+	Description       string     `json:"Description"`
+	Valid             bool       `json:"Valid"`
+	SqlQuery          string     `json:"SqlQuery"`
+	Scheduled         bool       `json:"Scheduled"`
+	CronExpression    string     `json:"CronExpression"`
+	LastExecutionTime *time.Time `json:"LastExecutionTime"`
+	SyncType          string     `json:"SyncType"`
+	DataSourceId      string     `json:"DataSourceId"`
+	DocumentField     string     `json:"DocumentField"`
 }
 
 type CreateIndexInput struct {

@@ -11,6 +11,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+func ScanRowsWithoutRowLimit(rows sqlx.Rows) list.List {
+	return ScanRows(rows, -1)
+}
+
 func ScanRows(rows sqlx.Rows, read_row_count int) list.List {
 	documents := list.New()
 

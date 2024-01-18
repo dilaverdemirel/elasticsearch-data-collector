@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceRoot}/sqlx_example.go"
+            "program": "${workspaceRoot}/es_data_collector.go"
         }
     ]
 }
