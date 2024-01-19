@@ -25,3 +25,9 @@ func UpdateIndexLastSyncDate(id string, last_sync_date time.Time) {
 	index.LastExecutionTime = &last_sync_date
 	dao.DB.Save(index)
 }
+
+func UpdateIndexAlias(id string, alias string) {
+	var index = GetIndexById(id)
+	index.Alias = alias
+	dao.DB.Save(index)
+}

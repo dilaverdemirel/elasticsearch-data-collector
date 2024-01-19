@@ -46,6 +46,7 @@ func CreateIndex(c *gin.Context) {
 	index := model.Index{
 		ID:             uuid.NewString(),
 		Name:           input.Name,
+		Alias:          input.Name,
 		Description:    input.Description,
 		Valid:          input.Valid,
 		SqlQuery:       input.SqlQuery,
@@ -56,6 +57,8 @@ func CreateIndex(c *gin.Context) {
 		DocumentField:  input.DocumentField,
 	}
 	dao.DB.Create(&index)
+
+	//TODO eğer index scheduled ise scheduler üzerinden Job schedule edilmeli
 
 	c.JSON(http.StatusCreated, gin.H{"data": index})
 }

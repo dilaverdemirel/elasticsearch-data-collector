@@ -25,15 +25,16 @@ func ConnectElasticsearch() {
 		},
 	}
 
-	ES, err := elasticsearch.NewClient(cfg)
+	var es, err = elasticsearch.NewClient(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	info, err := ES.Info()
+	info, err := es.Info()
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Cluseter info : ", info)
 
+	ES = es
 }

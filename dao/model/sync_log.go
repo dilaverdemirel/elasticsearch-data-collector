@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"database/sql/driver"
+	"time"
+)
 
 type SyncLogStatus string
 
@@ -10,6 +13,15 @@ const (
 	SyncLogStatusFailed   SyncLogStatus = "FAILED"
 )
 
+func (ct *SyncLogStatus) Scan(value interface{}) error {
+	*ct = SyncLogStatus(value.([]byte))
+	return nil
+}
+
+func (ct SyncLogStatus) Value() (driver.Value, error) {
+	return string(ct), nil
+}
+
 type SyncLog struct {
 	ID                string        `json:"ID" gorm:"primary_key"`
 	IndexId           string        `json:"IndexId" gorm:"size:191"`
@@ -17,6 +29,8 @@ type SyncLog struct {
 	StartDate         time.Time     `json:"StartDate"`
 	EndDate           *time.Time    `json:"EndDate"`
 	ExecutionDuration int32         `json:"ExecutionDuration"`
-	Status            SyncLogStatus `json:"Status" gorm:"size:20"` // STARTED, COMPLETED, FAILED
+	Status            SyncLogStatus `json:"Status" gorm:"size:20"`
 	StatusMessage     string        `json:"StatusMessage"`
+	CreatedAt         time.Time     `json:"CreatedAt" gorm:"autoCreateTime"`
+	UpdatedAt         time.Time     `json:"UpdatedAt" gorm:"autoUpdateTime"`
 }
