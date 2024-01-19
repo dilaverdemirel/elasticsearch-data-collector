@@ -4,17 +4,17 @@ import "time"
 
 type Index struct {
 	ID                string     `json:"ID" gorm:"primary_key"`
-	Name              string     `json:"Name"`
-	Alias             string     `json:"Alias"`
-	Description       string     `json:"Description"`
+	Name              string     `json:"Name" gorm:"size:100"`
+	Alias             string     `json:"Alias" gorm:"size:100"`
+	Description       string     `json:"Description" gorm:"size:150"`
 	Valid             bool       `json:"Valid"`
 	SqlQuery          string     `json:"SqlQuery"`
 	Scheduled         bool       `json:"Scheduled"`
-	CronExpression    string     `json:"CronExpression"`
+	CronExpression    string     `json:"CronExpression" gorm:"size:50"`
 	LastExecutionTime *time.Time `json:"LastExecutionTime"`
-	SyncType          string     `json:"SyncType"`
-	DataSourceId      string     `json:"DataSourceId"`
-	DocumentField     string     `json:"DocumentField"`
+	SyncType          string     `json:"SyncType" gorm:"size:20"`
+	DataSourceId      string     `json:"DataSourceId" gorm:"size:191"`
+	DocumentField     string     `json:"DocumentField" gorm:"size:50"`
 }
 
 type CreateIndexInput struct {

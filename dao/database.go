@@ -2,6 +2,7 @@ package dao
 
 import (
 	"eslasticsearchdatacollector/dao/model"
+	"eslasticsearchdatacollector/gormlock"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -20,7 +21,7 @@ func ConnectDatabase() {
 		panic("Failed to connect to database!")
 	}
 
-	err = database.AutoMigrate(&model.Datasource{}, &model.Index{}, &model.SyncLog{})
+	err = database.AutoMigrate(&model.Datasource{}, &model.Index{}, &model.SyncLog{}, &gormlock.CronJobLock{})
 	if err != nil {
 		return
 	}
