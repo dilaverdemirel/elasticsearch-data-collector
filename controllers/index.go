@@ -5,6 +5,7 @@ import (
 
 	"eslasticsearchdatacollector/dao"
 	"eslasticsearchdatacollector/dao/model"
+	"eslasticsearchdatacollector/scheduler"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -60,6 +61,10 @@ func CreateIndex(c *gin.Context) {
 
 	//TODO eğer index scheduled ise scheduler üzerinden Job schedule edilmeli
 
+	if index.Scheduled {
+		scheduler.Add_new_job_to_scheduler_by_index_id(index.ID)
+	}
+
 	c.JSON(http.StatusCreated, gin.H{"data": index})
 }
 
@@ -78,6 +83,8 @@ func IndexScheduleDataSync(c *gin.Context) {
 		SyncType:       input.SyncType,
 	})
 
+	scheduler.Add_new_job_to_scheduler_by_index_id(input.IndexId)
+
 	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: input.IndexId}).First})
 }
 
@@ -89,6 +96,8 @@ func IndexUnscheduleDataSync(c *gin.Context) {
 		CronExpression: "",
 		DocumentField:  "",
 	})
+
+	scheduler.Delete_job_by_index_id(id)
 
 	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: id}).First})
 }

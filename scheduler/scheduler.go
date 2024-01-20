@@ -11,6 +11,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var SCHEDULER gocron.Scheduler
+
 func InitializeSchedulerAndActivateJobs() {
 	var filter model.Index
 	filter.Valid = true
@@ -28,28 +30,43 @@ func InitializeSchedulerAndActivateJobs() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	SCHEDULER = scheduler
 
 	for i, index := range indices {
 		// add a job to the scheduler
-		j, err := scheduler.NewJob(
-			gocron.CronJob(
-				index.CronExpression,
-				true,
-			),
-			gocron.NewTask(
-				func() {
-					Sync(index.ID)
-				},
-			),
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-		// each job has a unique id
-		log.Println("Job ID : ", j.ID())
+		add_new_job_to_scheduler_by_index(index)
 		log.Println("At index", i, "value is", index)
 	}
 	// start the scheduler
 	scheduler.Start()
+}
 
+func Add_new_job_to_scheduler_by_index_id(index_id string) {
+	index := service.GetIndexById(index_id)
+	add_new_job_to_scheduler_by_index(index)
+}
+
+func add_new_job_to_scheduler_by_index(index model.Index) {
+	j, err := SCHEDULER.NewJob(
+		gocron.CronJob(
+			index.CronExpression,
+			true,
+		),
+		gocron.NewTask(
+			func() {
+				Sync(index.ID)
+			},
+		),
+		gocron.WithName(index.ID),
+		gocron.WithTags(index.ID),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// each job has a unique id
+	log.Println("Job ID : ", j.ID())
+}
+
+func Delete_job_by_index_id(index_id string) {
+	SCHEDULER.RemoveByTags(index_id)
 }

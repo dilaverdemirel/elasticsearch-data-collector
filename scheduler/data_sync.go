@@ -118,9 +118,11 @@ func ConvertGenericTypeDataToString(value interface{}) string {
 	field_data_type := reflect.TypeOf(value).String()
 	switch field_data_type {
 	case "int", "int8", "int16", "int32", "int64":
-		return fmt.Sprintf("%s", value)
+		temp := fmt.Sprintf("%v", value)
+		return temp
 	case "float32", "float64":
-		return fmt.Sprintf("%s", value)
+		temp := fmt.Sprintf("%v", value)
+		return temp
 	case "string":
 		return value.(string)
 	default:

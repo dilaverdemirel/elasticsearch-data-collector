@@ -41,9 +41,9 @@ type Index struct {
 type CreateIndexInput struct {
 	Name           string        `json:"Name" binding:"required"`
 	Description    string        `json:"Description"`
-	Valid          bool          `json:"Valid" binding:"required"`
+	Valid          bool          `json:"Valid"`
 	SqlQuery       string        `json:"SqlQuery" binding:"required"`
-	Scheduled      bool          `json:"Scheduled" binding:"required"`
+	Scheduled      bool          `json:"Scheduled"`
 	CronExpression string        `json:"CronExpression"`
 	SyncType       IndexSyncType `json:"SyncType" binding:"required"`
 	DataSourceId   string        `json:"DataSourceId" binding:"required"`
