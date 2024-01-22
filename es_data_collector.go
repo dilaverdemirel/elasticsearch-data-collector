@@ -6,6 +6,7 @@ import (
 	"eslasticsearchdatacollector/elasticsearch"
 	"eslasticsearchdatacollector/scheduler"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -17,6 +18,14 @@ func main() {
 	dao.ConnectDatabase()
 	elasticsearch.ConnectElasticsearch()
 	scheduler.InitializeSchedulerAndActivateJobs()
+
+	webApp.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 
 	webApp.GET("/datasources", controllers.FindDatasources)
 	webApp.GET("/datasources/:id", controllers.GetDatasourceById)
