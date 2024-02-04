@@ -26,9 +26,9 @@ type Index struct {
 	Name              string        `json:"Name" gorm:"size:100"`
 	Alias             string        `json:"Alias" gorm:"size:100"`
 	Description       string        `json:"Description" gorm:"size:150"`
-	Valid             bool          `json:"Valid"`
+	Valid             *bool         `json:"Valid"`
 	SqlQuery          string        `json:"SqlQuery"`
-	Scheduled         bool          `json:"Scheduled"`
+	Scheduled         *bool         `json:"Scheduled"`
 	CronExpression    string        `json:"CronExpression" gorm:"size:50"`
 	LastExecutionTime *time.Time    `json:"LastExecutionTime"`
 	SyncType          IndexSyncType `json:"SyncType" gorm:"size:20"`
@@ -48,6 +48,16 @@ type CreateIndexInput struct {
 	SyncType       IndexSyncType `json:"SyncType" binding:"required"`
 	DataSourceId   string        `json:"DataSourceId" binding:"required"`
 	DocumentField  string        `json:"DocumentField"`
+}
+
+type UpdateIndexInput struct {
+	Name          string        `json:"Name" binding:"required"`
+	Description   string        `json:"Description"`
+	Valid         bool          `json:"Valid"`
+	SqlQuery      string        `json:"SqlQuery" binding:"required"`
+	SyncType      IndexSyncType `json:"SyncType" binding:"required"`
+	DataSourceId  string        `json:"DataSourceId" binding:"required"`
+	DocumentField string        `json:"DocumentField"`
 }
 
 type ScheduleIndexInput struct {

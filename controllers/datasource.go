@@ -22,7 +22,16 @@ func GetDatasourceById(c *gin.Context) {
 	var datasource model.Datasource
 	dao.DB.Where(&model.Datasource{ID: id}).Take(&datasource)
 
-	c.JSON(http.StatusOK, gin.H{"data": datasource})
+	c.JSON(http.StatusOK, datasource)
+}
+
+func DeleteDatasourceById(c *gin.Context) {
+	id := c.Param("id")
+
+	var datasource model.Datasource
+	dao.DB.Where(&model.Datasource{ID: id}).Delete(&datasource)
+
+	c.JSON(http.StatusNoContent, datasource)
 }
 
 func CreateDataSource(c *gin.Context) {

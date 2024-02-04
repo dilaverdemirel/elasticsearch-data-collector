@@ -30,11 +30,13 @@ func main() {
 	webApp.GET("/datasources", controllers.FindDatasources)
 	webApp.GET("/datasources/:id", controllers.GetDatasourceById)
 	webApp.POST("/datasources", controllers.CreateDataSource)
+	webApp.DELETE("/datasources/:id", controllers.DeleteDatasourceById)
 
 	webApp.GET("/indices", controllers.FindIndices)
-	webApp.GET("/indices/:id", controllers.GetDatasourceById)
+	webApp.GET("/indices/:id", controllers.GetIndexById)
 	webApp.POST("/indices", controllers.CreateIndex)
-	webApp.DELETE("/indices", controllers.DeleteIndexById)
+	webApp.DELETE("/indices/:id", controllers.DeleteIndexById)
+	webApp.PUT("/indices/:id", controllers.UpdateIndex)
 	webApp.PUT("/indices/:id/schedule-data-sync", controllers.IndexScheduleDataSync)
 	webApp.DELETE("/indices/:id/unschedule-data-sync", controllers.IndexUnscheduleDataSync)
 

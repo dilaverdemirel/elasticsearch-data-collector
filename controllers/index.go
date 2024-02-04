@@ -25,15 +25,25 @@ func GetIndexById(c *gin.Context) {
 	var index model.Index
 	dao.DB.Where(&model.Index{ID: id}).Take(&index)
 
-	c.JSON(http.StatusOK, gin.H{"data": index})
+	c.JSON(http.StatusOK, index)
 }
 
 func DeleteIndexById(c *gin.Context) {
 	id := c.Param("id")
+
+	var existsIndex model.Index
+	dao.DB.Where(&model.Index{ID: id}).Take(&existsIndex)
+
+	if *existsIndex.Scheduled {
+		scheduler.Delete_job_by_index_id(id)
+	}
+
+	scheduler.DeleteElasticsearchIndex(id)
+
 	var index model.Index
 	dao.DB.Where(&model.Index{ID: id}).Delete(&index)
 
-	c.JSON(http.StatusOK, gin.H{"data": index})
+	c.JSON(http.StatusNoContent, index)
 }
 
 func CreateIndex(c *gin.Context) {
@@ -49,9 +59,9 @@ func CreateIndex(c *gin.Context) {
 		Name:           input.Name,
 		Alias:          input.Name,
 		Description:    input.Description,
-		Valid:          input.Valid,
+		Valid:          &input.Valid,
 		SqlQuery:       input.SqlQuery,
-		Scheduled:      input.Scheduled,
+		Scheduled:      &input.Scheduled,
 		CronExpression: input.CronExpression,
 		SyncType:       input.SyncType,
 		DataSourceId:   input.DataSourceId,
@@ -61,11 +71,38 @@ func CreateIndex(c *gin.Context) {
 
 	//TODO eğer index scheduled ise scheduler üzerinden Job schedule edilmeli
 
-	if index.Scheduled {
+	if *index.Scheduled {
 		scheduler.Add_new_job_to_scheduler_by_index_id(index.ID)
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"data": index})
+}
+
+func UpdateIndex(c *gin.Context) {
+	id := c.Param("id")
+
+	// Validate input
+	var input model.UpdateIndexInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	dao.DB.Model(&model.Index{ID: id}).Updates(&model.Index{
+		ID:            id,
+		Name:          input.Name,
+		Description:   input.Description,
+		Valid:         &input.Valid,
+		SqlQuery:      input.SqlQuery,
+		SyncType:      input.SyncType,
+		DataSourceId:  input.DataSourceId,
+		DocumentField: input.DocumentField,
+	})
+
+	var index model.Index
+	dao.DB.Where(&model.Index{ID: id}).Take(&index)
+
+	c.JSON(http.StatusOK, index)
 }
 
 func IndexScheduleDataSync(c *gin.Context) {
@@ -76,28 +113,36 @@ func IndexScheduleDataSync(c *gin.Context) {
 		return
 	}
 
-	dao.DB.Save(&model.Index{
+	scheduled := true
+	dao.DB.Model(&model.Index{ID: input.IndexId}).Updates(&model.Index{
 		ID:             input.IndexId,
 		CronExpression: input.CronExpression,
 		DocumentField:  input.DocumentIdField,
 		SyncType:       input.SyncType,
+		Scheduled:      &scheduled,
 	})
 
 	scheduler.Add_new_job_to_scheduler_by_index_id(input.IndexId)
 
-	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: input.IndexId}).First})
+	var index model.Index
+	dao.DB.Where(&model.Index{ID: input.IndexId}).Take(&index)
+	c.JSON(http.StatusOK, index)
 }
 
 func IndexUnscheduleDataSync(c *gin.Context) {
 	id := c.Param("id")
 
-	dao.DB.Save(&model.Index{
+	scheduled := false
+	dao.DB.Model(&model.Index{ID: id}).Updates(&model.Index{
 		ID:             id,
 		CronExpression: "",
 		DocumentField:  "",
+		Scheduled:      &scheduled,
 	})
 
 	scheduler.Delete_job_by_index_id(id)
 
-	c.JSON(http.StatusOK, gin.H{"data": dao.DB.Where(&model.Index{ID: id}).First})
+	var index model.Index
+	dao.DB.Where(&model.Index{ID: id}).Take(&index)
+	c.JSON(http.StatusOK, index)
 }

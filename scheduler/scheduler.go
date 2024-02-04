@@ -14,9 +14,10 @@ import (
 var SCHEDULER gocron.Scheduler
 
 func InitializeSchedulerAndActivateJobs() {
+	b := true
 	var filter model.Index
-	filter.Valid = true
-	filter.Scheduled = true
+	filter.Valid = &b
+	filter.Scheduled = &b
 	var indices = service.FindIndices(&filter)
 
 	var worker string = "worker-" + uuid.NewString()

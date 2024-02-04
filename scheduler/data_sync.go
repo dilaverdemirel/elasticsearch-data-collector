@@ -226,3 +226,14 @@ func complete_reload_all_data_import(index model.Index, alias string) error {
 
 	return nil
 }
+
+func DeleteElasticsearchIndex(index_id string) {
+	var index = service.GetIndexById(index_id)
+	index_delete_response, err := elasticsearch.ES.Indices.Delete([]string{index.Alias})
+	if err != nil {
+		panic(err)
+	}
+	if index_delete_response.StatusCode == 200 {
+		log.Printf("Index was deleted successfuly")
+	}
+}
