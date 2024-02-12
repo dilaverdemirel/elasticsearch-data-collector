@@ -146,3 +146,17 @@ func IndexUnscheduleDataSync(c *gin.Context) {
 	dao.DB.Where(&model.Index{ID: id}).Take(&index)
 	c.JSON(http.StatusOK, index)
 }
+
+func GetIndexSyncDailyStatusStats(c *gin.Context) {
+	id := c.Param("id")
+	var result []model.SyncDailyStatusStats
+	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, status as Status, count(id) RecordCount").Where("index_id= ?", id).Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
+	c.JSON(http.StatusOK, result)
+}
+
+func GetIndexSyncDailyRecordStats(c *gin.Context) {
+	id := c.Param("id")
+	var result []model.SyncDailyRecordStats
+	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, sum(document_count) RecordCount").Where("index_id= ?", id).Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
+	c.JSON(http.StatusOK, result)
+}

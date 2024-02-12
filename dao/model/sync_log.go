@@ -34,3 +34,14 @@ type SyncLog struct {
 	CreatedAt         time.Time     `json:"CreatedAt" gorm:"autoCreateTime"`
 	UpdatedAt         time.Time     `json:"UpdatedAt" gorm:"autoUpdateTime"`
 }
+
+type SyncDailyStatusStats struct {
+	Day         time.Time     `json:"Day"`
+	Status      SyncLogStatus `json:"Status"`
+	RecordCount int32         `json:"RecordCount"`
+}
+
+type SyncDailyRecordStats struct {
+	Day         time.Time `json:"Day"`
+	RecordCount int32     `json:"RecordCount"`
+}
