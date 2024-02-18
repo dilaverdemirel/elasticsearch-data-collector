@@ -44,5 +44,7 @@ func main() {
 
 	webApp.POST("/query-meta-data/preview", controllers.PreviewQueryMetaData)
 
+	webApp.GET("/sync-logs", controllers.FindSyncLogs)
+
 	webApp.Run()
 }
