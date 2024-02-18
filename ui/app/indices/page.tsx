@@ -4,6 +4,7 @@ import React from 'react';
 import { Breadcrumb, Button, Form, Table } from 'react-bootstrap';
 import { IoAddCircle } from 'react-icons/io5';
 import { FaEdit } from 'react-icons/fa';
+import { MdOutlineHistory } from 'react-icons/md';
 
 
 function Indices() {
@@ -76,6 +77,9 @@ function Indices() {
                 )}
                 <td key={row.ID + "td2"}>
                   <Button key={row.ID + "edit"} variant='link' href={'/indices/form/' + row.ID}><FaEdit size={20} /></Button>
+                </td>
+                <td key={row.ID + "td3"}>
+                  <Button key={row.ID + "history"} variant='link' href={'/sync-logs/' + row.ID}><MdOutlineHistory size={20} /></Button>
                 </td>
               </tr>
             )}
