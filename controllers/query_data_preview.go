@@ -19,6 +19,7 @@ func PreviewQueryMetaData(c *gin.Context) {
 
 	fmt.Println("query : ", input.Query)
 	rows, err := db_connection.Queryx(input.Query)
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,6 +44,7 @@ func PreviewQueryMetaData(c *gin.Context) {
 	meta_output.MetaDataList = meta_items
 
 	row_list := dao.ScanRows(*rows, 100)
+	rows.Close()
 	//row_list.Remove(nil)
 
 	meta_data_items := make([]map[string]interface{}, row_list.Len())
@@ -90,5 +92,5 @@ func PreviewQueryMetaData(c *gin.Context) {
 		output.ExampleData = dataItems
 	*/
 
-	c.JSON(http.StatusOK, gin.H{"data": meta_output})
+	c.JSON(http.StatusOK, meta_output)
 }

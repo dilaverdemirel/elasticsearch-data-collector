@@ -54,6 +54,7 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 	var id_field string = index.DocumentField
 	var record_count int32 = 0
 	row_list := dao.ScanRowsWithoutRowLimit(*rows)
+	rows.Close()
 
 	var index_name = index.Name
 	if index.SyncType == model.IndexSyncTypeReloadAll {

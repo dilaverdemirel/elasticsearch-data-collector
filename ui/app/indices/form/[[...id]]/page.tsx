@@ -1,11 +1,14 @@
 'use client'
-import { Breadcrumb, Button, Card, Col, Form, Modal, Row } from "react-bootstrap"
+import { Breadcrumb, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Table, Tooltip } from "react-bootstrap"
 import { useEffect, useState } from "react";
 import { createIndex, deleteIndex, getIndexById, scheduleIndexDataSync, unscheduleIndexDataSync, updateIndex } from "../../service";
 import Index, { ScheduleIndex } from "../..";
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
-import { getDatasources } from "@/app/datasources/service";
+import { getDatasources, getQueryPreviewData } from "@/app/datasources/service";
+import { QueryPreviewDataDTO, QueryPreviewResultDTO } from "@/app/datasources/datasource";
+import { MdOutlineHistory, MdPreview, MdSchedule } from "react-icons/md";
+import { VscOpenPreview } from "react-icons/vsc";
 
 export default function IndexForm() {
 
@@ -19,6 +22,8 @@ export default function IndexForm() {
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [showUnscheduleForm, setShowUnscheduleForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
+  const [showPreviewResult, setShowPreviewResult] = useState(false);
+  const [queryPreviewResult, setQueryPreviewResult] = useState(new QueryPreviewResultDTO());
 
 
   const loadIndex = (id: string) => {
@@ -32,6 +37,16 @@ export default function IndexForm() {
           SyncType: res.data.SyncType,
           IndexId: res.data.ID
         })
+      })
+  }
+
+  const sqlPreview = () => {
+    const previewMetadata = new QueryPreviewDataDTO()
+    previewMetadata.DataSourceId = index.DataSourceId
+    previewMetadata.Query = index.SqlQuery
+    getQueryPreviewData(previewMetadata)
+      .then(res => {
+        setQueryPreviewResult(res.data)
       })
   }
 
@@ -145,6 +160,12 @@ export default function IndexForm() {
       })
   }
 
+  const renderSqlQueryPreviewTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      SQL Query Preview Results
+    </Tooltip>
+  );
+
   return (
     <div style={{ width: "100%" }}>
       <Breadcrumb>
@@ -190,7 +211,7 @@ export default function IndexForm() {
           </Form.Group>
         </Row>
         <Row className="mb-3">
-          <Form.Group as={Col} md="4" className="mb-3">
+          <Form.Group as={Col} md="5" className="mb-3">
             <Form.Label>Datasource</Form.Label>
             <Form.Select aria-label="Datasource" required onChange={(e) => setIndex({ ...index, DataSourceId: e.target.value })}
               value={index.DataSourceId}>
@@ -200,18 +221,30 @@ export default function IndexForm() {
               })}
             </Form.Select>
           </Form.Group>
+
+          <Form.Group as={Col} md="1" className="mb-3">
+            
+              <Button variant="link"
+                style={{ marginTop: 30 }}
+                onClick={() => { setShowPreviewResult(true); sqlPreview(); }}>
+                <VscOpenPreview size={30} />
+              </Button>
+            
+          </Form.Group>
+
           <Form.Group as={Col} md="2" className="mb-3">
             <Form.Check
               type="switch"
               id="valid"
               label="Valid"
               checked={index.Valid}
+              style={{ marginTop: 40 }}
               onChange={(e) => setIndex({ ...index, Valid: e.target.checked })}
             />
           </Form.Group>
-          <Form.Group as={Col} md="6" className="mb-3">
-            <Button variant="primary" onClick={() => setShowScheduleForm(true)}
-              style={{ display: index.ID && !index.Scheduled ? 'block' : 'none' }}>
+          <Form.Group as={Col} md="4" className="mb-3">
+            <Button variant="link" onClick={() => setShowScheduleForm(true)}
+              style={{ display: index.ID && !index.Scheduled ? 'block' : 'none', marginTop: 35 }}>
               Schedule Data Sync
             </Button>
             <Card style={{ display: index.ID && index.Scheduled ? 'block' : 'none', width: '100%' }}>
@@ -325,6 +358,40 @@ export default function IndexForm() {
           </Button>
           <Button variant="danger" onClick={() => { deleteIndexFnc(); setShowDeleteForm(false); }}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Sql Query Preview Result Modal */}
+      <Modal fullscreen show={showPreviewResult} aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Header>
+          <Modal.Title>SQL Query Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr key={"header"}>
+                {queryPreviewResult.MetaDataList.map((column) =>
+                  <th key={column.FieldName}>{column.FieldName}</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {queryPreviewResult.ExampleData.map((row, rowindex) =>
+                <tr key={rowindex + "tr"}>
+                  {queryPreviewResult.MetaDataList.map((column, colindex) =>
+                    <td key={colindex + "td1" + column.FieldName}>
+                      {row[column.FieldName]}
+                    </td>
+                  )}
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowPreviewResult(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

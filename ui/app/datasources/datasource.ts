@@ -11,3 +11,30 @@ export default class Datasource {
     constructor() {
     }
 }
+
+export class QueryPreviewDataDTO {
+    DataSourceId: string = "";
+    Query: string = "";
+
+    constructor() {
+    }
+}
+
+export type ExampleData = {
+    [id: string]: string;
+}
+
+export class FieldMetaData {
+    FieldName: string = "";
+    DataType: string = "";
+    constructor() {
+    }
+}
+
+export class QueryPreviewResultDTO {
+    ExampleData: ExampleData[] = [];
+    MetaDataList: FieldMetaData[] = [];
+
+    constructor() {
+    }
+}

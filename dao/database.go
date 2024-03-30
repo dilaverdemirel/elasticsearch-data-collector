@@ -50,7 +50,6 @@ func ConnectDatabaseWithDefinedDatasource(datasource_id string) sqlx.DB {
 			datasource_map[datasource_id] = *db
 			temp_datasource = *db
 		}
-
 		return temp_datasource
 	}
 
