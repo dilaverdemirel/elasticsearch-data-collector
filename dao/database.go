@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"eslasticsearchdatacollector/appenv"
 	"eslasticsearchdatacollector/dao/model"
 	"eslasticsearchdatacollector/gormlock"
 	"log"
@@ -35,8 +36,10 @@ func ConnectDatabaseWithDefinedDatasource(datasource_id string) sqlx.DB {
 	if !ok {
 		DB.Where(&model.Datasource{ID: datasource_id}).Take(&datasource)
 
+		pwd := appenv.Decrypt(datasource.DbPassword)
+
 		db, err := sqlx.Open(datasource.DriverName,
-			datasource.UserName+":"+datasource.DbPassword+
+			datasource.UserName+":"+pwd+
 				"@"+datasource.ConnectionString)
 		db.SetMaxIdleConns(int(datasource.MinIdle))
 		db.SetMaxOpenConns(int(datasource.MaxPoolSize))

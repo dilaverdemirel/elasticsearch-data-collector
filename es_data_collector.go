@@ -30,6 +30,7 @@ func main() {
 	webApp.GET("/datasources", controllers.FindDatasources)
 	webApp.GET("/datasources/:id", controllers.GetDatasourceById)
 	webApp.POST("/datasources", controllers.CreateDataSource)
+	webApp.PUT("/datasources/:id", controllers.UpdateDatasource)
 	webApp.DELETE("/datasources/:id", controllers.DeleteDatasourceById)
 
 	webApp.GET("/indices", controllers.FindIndices)

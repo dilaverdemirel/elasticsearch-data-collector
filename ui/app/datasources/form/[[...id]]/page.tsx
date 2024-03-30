@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Datasource from "../../datasource";
 import { createDatasource, deleteDatasource, getDatasourceById, updateDatasource } from "../../service";
 
-export default function IndexForm() {
+export default function DatasourceForm() {
 
   const router = useRouter()
   const params = useParams<{ id: string; }>()
@@ -26,7 +26,6 @@ export default function IndexForm() {
     if (params?.id?.length > 0) {
       loadDatasource(params.id[0])
     }
-
   }, [])
 
   const redirectToDatasourcesList = () => {
@@ -170,7 +169,7 @@ export default function IndexForm() {
             <Form.Label>Password</Form.Label>
             <Form.Control
               required
-              type="text"
+              type="password"
               placeholder="pwd"
               value={datasource.DbPassword}
               onChange={(e) => {

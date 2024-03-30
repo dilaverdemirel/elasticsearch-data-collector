@@ -9,7 +9,7 @@ type Datasource struct {
 	MaxPoolSize      uint      `json:"MaxPoolSize"`
 	MinIdle          uint      `json:"MinIdle"`
 	UserName         string    `json:"UserName" gorm:"size:50"`
-	DbPassword       string    `json:"DbPassword" gorm:"size:50"`
+	DbPassword       string    `json:"DbPassword" gorm:"size:250"`
 	DriverName       string    `json:"DriverName" gorm:"size:50"`
 	CreatedAt        time.Time `json:"CreatedAt" gorm:"autoCreateTime"`
 	UpdatedAt        time.Time `json:"UpdatedAt" gorm:"autoUpdateTime"`
