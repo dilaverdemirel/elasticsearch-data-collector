@@ -71,3 +71,21 @@ func add_new_job_to_scheduler_by_index(index model.Index) {
 func Delete_job_by_index_id(index_id string) {
 	SCHEDULER.RemoveByTags(index_id)
 }
+
+func One_time_schedule_by_index_id(index_id string) {
+	j, err := SCHEDULER.NewJob(
+		gocron.OneTimeJob(gocron.OneTimeJobStartImmediately()),
+		gocron.NewTask(
+			func() {
+				Sync(index_id)
+			},
+		),
+		gocron.WithName(index_id),
+		gocron.WithTags(index_id),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// each job has a unique id
+	log.Println("OneTime Job ID : ", j.ID())
+}

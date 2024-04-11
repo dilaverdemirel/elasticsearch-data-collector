@@ -1,7 +1,7 @@
 'use client'
 import { Breadcrumb, Button, Card, Col, Form, Modal, OverlayTrigger, Row, Table, Tooltip } from "react-bootstrap"
 import { useEffect, useState } from "react";
-import { createIndex, deleteIndex, getIndexById, scheduleIndexDataSync, unscheduleIndexDataSync, updateIndex } from "../../service";
+import { createIndex, deleteIndex, getIndexById, scheduleIndexDataSync, startDataSyncImmediately, unscheduleIndexDataSync, updateIndex } from "../../service";
 import Index, { ScheduleIndex } from "../..";
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
@@ -223,13 +223,13 @@ export default function IndexForm() {
           </Form.Group>
 
           <Form.Group as={Col} md="1" className="mb-3">
-            
-              <Button variant="link"
-                style={{ marginTop: 30 }}
-                onClick={() => { setShowPreviewResult(true); sqlPreview(); }}>
-                <VscOpenPreview size={30} />
-              </Button>
-            
+
+            <Button variant="link"
+              style={{ marginTop: 30 }}
+              onClick={() => { setShowPreviewResult(true); sqlPreview(); }}>
+              <VscOpenPreview size={30} />
+            </Button>
+
           </Form.Group>
 
           <Form.Group as={Col} md="2" className="mb-3">

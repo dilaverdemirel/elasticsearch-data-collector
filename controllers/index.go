@@ -148,15 +148,20 @@ func IndexUnscheduleDataSync(c *gin.Context) {
 }
 
 func GetIndexSyncDailyStatusStats(c *gin.Context) {
-	id := c.Param("id")
 	var result []model.SyncDailyStatusStats
-	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, status as Status, count(id) RecordCount").Where("index_id= ?", id).Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
+	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, status as Status, count(id) RecordCount").Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
 	c.JSON(http.StatusOK, result)
 }
 
 func GetIndexSyncDailyRecordStats(c *gin.Context) {
-	id := c.Param("id")
 	var result []model.SyncDailyRecordStats
-	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, sum(document_count) RecordCount").Where("index_id= ?", id).Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
+	dao.DB.Model(&model.SyncLog{}).Select("date(created_at) as Day, sum(document_count) RecordCount").Group("date(created_at), status").Order("date(created_at)").Limit(10).Find(&result)
 	c.JSON(http.StatusOK, result)
+}
+
+func StartSyncImmetiately(c *gin.Context) {
+	id := c.Param("id")
+	scheduler.One_time_schedule_by_index_id(id)
+
+	c.Status(http.StatusOK)
 }

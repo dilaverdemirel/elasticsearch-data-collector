@@ -10,7 +10,7 @@ export default function AppNavBar() {
 
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container style={{width:"54%"}}>
-        <Navbar.Brand href="/">Elasticsearc Data Collector</Navbar.Brand>
+        <Navbar.Brand href="/">Elasticsearch Data Collector</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">

@@ -30,3 +30,7 @@ export const unscheduleIndexDataSync = (indexId: string) => {
 export const deleteIndex = (indexId: string) => {
     return axios.delete("http://localhost:8080/indices/" + indexId)
 }
+
+export const startDataSyncImmediately = (indexId: string) => {
+    return axios.post("http://localhost:8080/indices/" + indexId + "/start-sync-immediately")
+}

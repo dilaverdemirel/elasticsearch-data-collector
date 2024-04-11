@@ -40,8 +40,9 @@ func main() {
 	webApp.PUT("/indices/:id", controllers.UpdateIndex)
 	webApp.PUT("/indices/:id/schedule-data-sync", controllers.IndexScheduleDataSync)
 	webApp.DELETE("/indices/:id/unschedule-data-sync", controllers.IndexUnscheduleDataSync)
-	webApp.GET("/indices/:id/sync-daily-status-stats", controllers.GetIndexSyncDailyStatusStats)
-	webApp.GET("/indices/:id/sync-daily-record-stats", controllers.GetIndexSyncDailyRecordStats)
+	webApp.GET("/indices/sync-daily-status-stats", controllers.GetIndexSyncDailyStatusStats)
+	webApp.GET("/indices/sync-daily-record-stats", controllers.GetIndexSyncDailyRecordStats)
+	webApp.POST("/indices/:id/start-sync-immediately", controllers.StartSyncImmetiately)
 
 	webApp.POST("/query-meta-data/preview", controllers.PreviewQueryMetaData)
 

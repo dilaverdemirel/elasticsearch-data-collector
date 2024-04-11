@@ -1,15 +1,20 @@
 'use client'
 import useSWR from 'swr'
-import React from 'react';
-import { Breadcrumb, Button, Form, Table } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Breadcrumb, Button, Form, Modal, Table } from 'react-bootstrap';
 import { IoAddCircle } from 'react-icons/io5';
 import { FaEdit } from 'react-icons/fa';
-import { MdOutlineHistory } from 'react-icons/md';
+import { MdOutlineHistory, MdSyncAlt } from 'react-icons/md';
+import { startDataSyncImmediately } from './service';
+import { toast } from 'react-toastify';
 
 
 function Indices() {
   const fetcher = (...args) => fetch(...args).then((res) => res.json())
   const { data, error } = useSWR('http://localhost:8080/indices', fetcher)
+
+  const [showOneTimeStartSync, setShowOneTimeStartSync] = useState(false);
+  const [selectedIndexId, setSelectedIndexId] = useState("");
 
   if (error) return <div>Failed to load {error}</div>
   //if (!data) return <div>Loading...</div>
@@ -44,6 +49,16 @@ function Indices() {
       label: "Cron Expression",
     },
   ];
+
+  const startDataSync = () => {
+    startDataSyncImmediately(selectedIndexId)
+      .then(res => {
+        toast.success("Successfully started.");
+      }).catch((err) => {
+        toast.error("" + err);
+        console.error(err)
+      })
+  }
 
   if (data) {
     return (
@@ -81,10 +96,33 @@ function Indices() {
                 <td key={row.ID + "td3"}>
                   <Button key={row.ID + "history"} variant='link' href={'/sync-logs/' + row.ID}><MdOutlineHistory size={20} /></Button>
                 </td>
+                <td key={row.ID + "td4"}>
+                  <Button variant="link" onClick={() => { setSelectedIndexId(row.ID); setShowOneTimeStartSync(true); }}>
+                    <MdSyncAlt size={20} />
+                  </Button>
+                </td>
               </tr>
             )}
           </tbody>
         </Table>
+
+        {/* OneTime Sync Modal */}
+        <Modal show={showOneTimeStartSync} aria-labelledby="contained-modal-title-vcenter" centered>
+          <Modal.Header>
+            <Modal.Title>Start OneTime Data Sync</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Do you want to continue?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowOneTimeStartSync(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => { startDataSync(); setShowOneTimeStartSync(false); }}>
+              Start data sync...
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     )
   }
