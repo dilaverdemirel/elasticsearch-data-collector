@@ -291,7 +291,7 @@ export default function IndexForm() {
             <Form.Group
               className="mb-3"
             >
-              <Form.Label>Document Field Id</Form.Label>
+              <Form.Label>Document Id Field</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="id"

@@ -16,6 +16,7 @@ export default function AppNavBar() {
           <Nav className="me-auto">
             <Nav.Link href="/datasources" active={pathname.startsWith("/datasources")}>Datasources</Nav.Link>
             <Nav.Link href="/indices" active={pathname.startsWith("/indices")}>Indices</Nav.Link>
+            <Nav.Link href="/about" active={pathname.startsWith("/about")}>About & Help</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
