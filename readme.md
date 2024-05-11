@@ -33,7 +33,17 @@ Environment variables:
 |ES_DATA_COLLECTOR_CHIPHER_KEY | Chipher key for using encrypt confidential data | es-data-collector-key-0123456789 |
 |ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING | Application database connection string. | root:root@tcp(127.0.0.1:3306)/es-data-collector?parseTime=true |
 
+#### Docker Image
 
+You can build a docker image using below commands.
+
+```shell
+docker build --tag es-data-collector .
+docker rm -f es-data-collector-app
+docker run --name es-data-collector-app -p 3000:3000 -e ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS='http://192.168.1.52:9200' -e ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING='root:root@tcp(192.168.1.52:3306)/es-data-collector?parseTime=true' es-data-collector
+```
+
+After build docker image and run you can access Elasticsearch Data Collector app with this [http://localhost:3000](http://localhost:3000)
 
 ### Starting steps
 
