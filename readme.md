@@ -1,5 +1,7 @@
 # Elasticsearch Data Collector
 
+![Home](images/home.png)
+
 ## What is the aim of this app?
 
 Sometimes, you need to transfer your data that is on a RDBMS to Elasticsearch. **Elasticsearch Data Collector** can help you on that way. You can easily transfer your data to Elasticsearch with a few definitions and sql query.
