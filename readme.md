@@ -15,6 +15,26 @@ that's it.
 
 After that your data will be on the Elasticsearch.
 
+### Technical Details
+
+**Elasticsearch Data Collector** is highly scalable. It supports this feature. When you launch new instances, it automatically coordinates processes to avoid conflicts.
+
+Supported databases:
+
+| Name |
+|------|
+|MySQL |
+
+Environment variables:
+
+| Variable | Decription    | Default Value |
+|----------|---------------|---------------|
+|ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS | Elasticsearch address | http://localhost:9200 |
+|ES_DATA_COLLECTOR_CHIPHER_KEY | Chipher key for using encrypt confidential data | es-data-collector-key-0123456789 |
+|ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING | Application database connection string. | root:root@tcp(127.0.0.1:3306)/es-data-collector?parseTime=true |
+
+
+
 ### Starting steps
 
 #### Create a datasource

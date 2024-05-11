@@ -5,6 +5,7 @@ import (
 	"eslasticsearchdatacollector/dao/model"
 	"eslasticsearchdatacollector/gormlock"
 	"log"
+	"os"
 
 	"github.com/jmoiron/sqlx"
 	"gorm.io/driver/mysql"
@@ -16,7 +17,12 @@ var datasource_map = make(map[string]sqlx.DB)
 
 func ConnectDatabase() {
 
-	database, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/es-data-collector?parseTime=true"), &gorm.Config{})
+	var dbConnectionString = os.Getenv("ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING")
+	if dbConnectionString == "" {
+		dbConnectionString = "root:root@tcp(127.0.0.1:3306)/es-data-collector?parseTime=true"
+	}
+
+	database, err := gorm.Open(mysql.Open(dbConnectionString), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")

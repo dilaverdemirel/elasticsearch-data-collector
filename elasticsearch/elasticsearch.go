@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/elastic/go-elasticsearch/v7"
@@ -13,10 +14,15 @@ import (
 var ES *elasticsearch.Client
 
 func ConnectElasticsearch() {
+
+	var address = os.Getenv("ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS")
+	if address == "" {
+		address = "http://localhost:9200"
+	}
+
 	var cfg = elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200",
-			"http://localhost:9201",
+			address,
 		},
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost:   10,
