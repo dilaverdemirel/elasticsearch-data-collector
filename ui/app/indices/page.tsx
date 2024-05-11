@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 
 function Indices() {
-  const fetcher = (...args) => fetch(...args).then((res) => res.json())
+  const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
   const { data, error } = useSWR('http://localhost:8080/indices', fetcher)
 
   const [showOneTimeStartSync, setShowOneTimeStartSync] = useState(false);
@@ -81,7 +81,7 @@ function Indices() {
             </tr>
           </thead>
           <tbody>
-            {data.data.map((row) =>
+            {data.data.map((row : any) =>
               <tr key={row.ID + "tr"}>
                 {columns.map((column) =>
                   <td key={row.ID + "td1" + column.key}>

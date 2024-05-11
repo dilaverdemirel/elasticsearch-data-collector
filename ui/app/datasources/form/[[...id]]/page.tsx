@@ -1,5 +1,5 @@
 'use client'
-import { Breadcrumb, Button, Card, Col, Form, Modal, Row } from "react-bootstrap"
+import { Breadcrumb, Button, Col, Form, Modal, Row } from "react-bootstrap"
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
@@ -34,7 +34,7 @@ export default function DatasourceForm() {
     }, 2000);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event : React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -72,6 +72,8 @@ export default function DatasourceForm() {
     }
 
     setValidated(true);
+
+    return event;
   };
 
 
@@ -195,10 +197,10 @@ export default function DatasourceForm() {
 
         <Row className="mb-3">
           <Form.Group as={Col} md="2" className="mb-3">
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" variant="primary" className="btn-primary">Save Changes</Button>
           </Form.Group>
           <Form.Group as={Col} md="10" className="mb-3" style={{ visibility: datasource.ID ? 'visible' : 'hidden' }}>
-            <Button variant="danger" onClick={() => setShowDeleteForm(true)}>Delete Datasource</Button>
+            <Button variant="danger" className="btn-danger" onClick={() => setShowDeleteForm(true)}>Delete Datasource</Button>
           </Form.Group>
         </Row>
       </Form>

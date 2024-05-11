@@ -16,7 +16,7 @@
   }
 }
 
-body {
+/* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -24,6 +24,10 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+} */
+
+[type=button], [type=reset], [type=submit], button{
+  background-color: 'rgb(var(--bs-btn-bg))' !important;
 }
 
 @layer utilities {

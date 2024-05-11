@@ -12,10 +12,12 @@ export default function About() {
     </Breadcrumb>
 
     <table>
-      <tr>
-        <td><Image src="logo.png" style={{ width: 70 }} alt="Elasticsearch Data Collector" title="Elasticsearch Data Collector"/></td>
-        <td><h2>Elasticsearch Data Collector</h2></td>
-      </tr>
+      <tbody>
+        <tr>
+          <td><Image src="logo.png" style={{ width: 70 }} alt="Elasticsearch Data Collector" title="Elasticsearch Data Collector" /></td>
+          <td><h2>Elasticsearch Data Collector</h2></td>
+        </tr>
+      </tbody>
     </table>
 
     <Card>
@@ -48,12 +50,12 @@ export default function About() {
             Go to the <a href="/datasources">Datasources</a> menu.
             <br />
             <br />
-            <Image src="about/images/datasource-1.png" thumbnail />
+            <Image src="about/images/datasource-1.png" thumbnail alt="." />
             <br />
             Click "Add New" button and fill the form with your database information and save.
             <br />
             <br />
-            <Image src="about/images/datasource-2.png" thumbnail />
+            <Image src="about/images/datasource-2.png" thumbnail alt="." />
             <br />
             You have done. Let's to the next step...
           </Accordion.Body>
@@ -64,17 +66,17 @@ export default function About() {
             Let's we create a new index.
             <br />
             <br />
-            <Image src="about/images/indices-1.png" thumbnail />
+            <Image src="about/images/indices-1.png" thumbnail alt="." />
             <br />
             Click "Add New" button and fill the form with your information. You should enter a suitable name lowercase and concatenated with an underscore character.
             You can enter a description for your index. You must enter a valid sql query to retrieve your data from database. After that you must select your datasource.
             At this point you can preview your sql query results with clicking preview button.
             <br />
             <br />
-            <Image src="about/images/indices-2.png" thumbnail />
+            <Image src="about/images/indices-2.png" thumbnail alt="." />
             <br />
             <br />
-            <Image src="about/images/indices-3.png" thumbnail />
+            <Image src="about/images/indices-3.png" thumbnail alt="." />
             <br />
             If everyting is OK, save the index.
           </Accordion.Body>
@@ -85,12 +87,12 @@ export default function About() {
             Go to the <a href="/indices">Indices</a> menu and click the edit button on the list.
             <br />
             <br />
-            <Image src="about/images/indices-4.png" thumbnail />
+            <Image src="about/images/indices-4.png" thumbnail alt="." />
             <br />
             Click the "Schedule Data Sync" link.
             <br />
             <br />
-            <Image src="about/images/indices-5.png" thumbnail />
+            <Image src="about/images/indices-5.png" thumbnail alt="." />
             <br />
             Enter a valid cron expression what you want your synchronization period.
             <br />
@@ -100,15 +102,15 @@ export default function About() {
             <br />
             You must select a "Sync Type". There are the synchronization types: "Reload All" and "Iterative". If you select the <b>reload all</b> type,
             your exist data that is on the Elasticsearch will be deleted after synchronization. First, all the data in RDBMS will be transfered to Elasticsearch again.
-            Don't worry. Until the synchronization is completed, your exist data will be reachable. When the synchronization is completed, you can reach the new data. 
+            Don't worry. Until the synchronization is completed, your exist data will be reachable. When the synchronization is completed, you can reach the new data.
             And after that the old data that is on the Elasticsearch will be deleted.
             <br />
             <br />
-            If you select the <b>Iterative type</b>, you can only retrieve the data that is changed from after last synchronization time. To do that you can use the special keyword ":#sql_last_value" 
-            to modify your query dynamically. For example; "select * from customers where created_at >= :#sql_last_value". 
+            If you select the <b>Iterative type</b>, you can only retrieve the data that is changed from after last synchronization time. To do that you can use the special keyword ":#sql_last_value"
+            to modify your query dynamically. For example; "select * from customers where created_at &gt;= :#sql_last_value".
             <br />
             <br />
-            <Image src="about/images/indices-6.png" thumbnail />
+            <Image src="about/images/indices-6.png" thumbnail alt="." />
             <br />
           </Accordion.Body>
         </Accordion.Item>

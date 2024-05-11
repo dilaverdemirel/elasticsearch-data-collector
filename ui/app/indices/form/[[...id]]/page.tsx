@@ -66,7 +66,7 @@ export default function IndexForm() {
     }, 2000);
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -106,7 +106,7 @@ export default function IndexForm() {
     setValidated(true);
   };
 
-  const handleSubmitForScheduleForm = (event) => {
+  const handleSubmitForScheduleForm = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
 
@@ -158,13 +158,6 @@ export default function IndexForm() {
         console.error(err)
       })
   }
-
-  const renderSqlQueryPreviewTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      SQL Query Preview Results
-    </Tooltip>
-  );
-
   return (
     <div style={{ width: "100%" }}>
       <Breadcrumb>
@@ -215,7 +208,7 @@ export default function IndexForm() {
             <Form.Select aria-label="Datasource" required onChange={(e) => setIndex({ ...index, DataSourceId: e.target.value })}
               value={index.DataSourceId}>
               <option></option>
-              {dsdata && dsdata.data.map((ds) => {
+              {dsdata && dsdata.data.map((ds : any) => {
                 return <option key={ds["ID"]} value={ds["ID"]}>{ds["Name"]}</option>
               })}
             </Form.Select>
@@ -223,7 +216,7 @@ export default function IndexForm() {
 
           <Form.Group as={Col} md="1" className="mb-3">
 
-            <Button variant="link"
+            <Button variant="link" className="btn-link"
               style={{ marginTop: 30 }}
               onClick={() => { setShowPreviewResult(true); sqlPreview(); }}>
               <VscOpenPreview size={30} />
@@ -242,7 +235,7 @@ export default function IndexForm() {
             />
           </Form.Group>
           <Form.Group as={Col} md="4" className="mb-3">
-            <Button variant="link" onClick={() => setShowScheduleForm(true)}
+            <Button variant="link" className="btn-link" onClick={() => setShowScheduleForm(true)}
               style={{ display: index.ID && !index.Scheduled ? 'block' : 'none', marginTop: 35 }}>
               Schedule Data Sync
             </Button>
@@ -262,10 +255,10 @@ export default function IndexForm() {
         </Row>
         <Row className="mb-3">
           <Form.Group as={Col} md="2" className="mb-3">
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" className="btn-primary">Save Changes</Button>
           </Form.Group>
           <Form.Group as={Col} md="10" className="mb-3" style={{ visibility: index.ID ? 'visible' : 'hidden' }}>
-            <Button variant="danger" onClick={() => setShowDeleteForm(true)}>Delete Index</Button>
+            <Button variant="danger" className="btn-danger" onClick={() => setShowDeleteForm(true)}>Delete Index</Button>
           </Form.Group>
         </Row>
       </Form>
@@ -315,10 +308,10 @@ export default function IndexForm() {
 
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowScheduleForm(false)}>
+            <Button variant="secondary" className="btn-secondary" onClick={() => setShowScheduleForm(false)}>
               Close
             </Button>
-            <Button type="submit" variant="primary" >
+            <Button type="submit" variant="primary" className="btn-primary">
               Schedule
             </Button>
           </Modal.Footer>
@@ -334,10 +327,10 @@ export default function IndexForm() {
           <p>Do you want to continue? Index data sync will be unscheduled!</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUnscheduleForm(false)}>
+          <Button variant="secondary" className="btn-secondary" onClick={() => setShowUnscheduleForm(false)}>
             Close
           </Button>
-          <Button variant="primary" onClick={() => { unschedule(); setShowUnscheduleForm(false); }}>
+          <Button variant="primary" className="btn-primary" onClick={() => { unschedule(); setShowUnscheduleForm(false); }}>
             Unschedule
           </Button>
         </Modal.Footer>
@@ -352,10 +345,10 @@ export default function IndexForm() {
           <p>Do you want to continue? Index will be deleted!</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteForm(false)}>
+          <Button variant="secondary" className="btn-primary" onClick={() => setShowDeleteForm(false)}>
             Close
           </Button>
-          <Button variant="danger" onClick={() => { deleteIndexFnc(); setShowDeleteForm(false); }}>
+          <Button variant="danger" className="btn-danger" onClick={() => { deleteIndexFnc(); setShowDeleteForm(false); }}>
             Delete
           </Button>
         </Modal.Footer>
@@ -389,7 +382,7 @@ export default function IndexForm() {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPreviewResult(false)}>
+          <Button variant="secondary" className="btn-secondary" onClick={() => setShowPreviewResult(false)}>
             Close
           </Button>
         </Modal.Footer>

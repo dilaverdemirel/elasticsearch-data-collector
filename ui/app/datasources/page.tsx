@@ -4,8 +4,7 @@ import { Breadcrumb, Button, Form, Table } from 'react-bootstrap';
 import { IoAddCircle } from 'react-icons/io5';
 import { FaEdit } from 'react-icons/fa';
 
-
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
+const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
 
 function Datasources() {
   const { data, error } = useSWR('http://localhost:8080/datasources', fetcher)
@@ -57,10 +56,10 @@ function Datasources() {
           </tr>
         </thead>
         <tbody>
-          {data.data.map((row) =>
+          {data.data.map((row : any) =>
             <tr key={row.ID}>
-              {columns.map((column) =>
-                <td>
+              {columns.map((column, index) =>
+                <td key={row.ID + "-" + index}>
                   {column.key !== 'Valid' && column.key !== 'Scheduled' ? row[column.key] :
                     <Form.Check type="checkbox" defaultChecked={row[column.key]} disabled={true} />
                   }
