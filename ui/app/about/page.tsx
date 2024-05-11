@@ -11,6 +11,13 @@ export default function About() {
       <Breadcrumb.Item active>About & Help</Breadcrumb.Item>
     </Breadcrumb>
 
+    <table>
+      <tr>
+        <td><Image src="logo.png" style={{ width: 70 }} alt="Elasticsearch Data Collector" title="Elasticsearch Data Collector"/></td>
+        <td><h2>Elasticsearch Data Collector</h2></td>
+      </tr>
+    </table>
+
     <Card>
       <Card.Body>
         <Card.Title>What is the aim of this app?</Card.Title>

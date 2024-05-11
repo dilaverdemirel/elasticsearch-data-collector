@@ -7,7 +7,6 @@ import { useParams, useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
 import { getDatasources, getQueryPreviewData } from "@/app/datasources/service";
 import { QueryPreviewDataDTO, QueryPreviewResultDTO } from "@/app/datasources/datasource";
-import { MdOutlineHistory, MdPreview, MdSchedule } from "react-icons/md";
 import { VscOpenPreview } from "react-icons/vsc";
 
 export default function IndexForm() {

@@ -47,6 +47,11 @@ export default function RootLayout({
           <ToastContainer />
         </Providers>
 
+        <div style={{width:'100%', textAlign: "center", marginTop:30, marginBottom:10}}>
+          <hr/>
+          <i>Elasticsearch Data Collector</i>
+          </div>
+
       </body>
     </html>
   );
