@@ -82,3 +82,7 @@ You must select a "Sync Type". There are the synchronization types: "Reload All"
 If you select the **Iterative type**, you can only retrieve the data that is changed from after last synchronization time. To do that you can use the special keyword ":#sql_last_value" to modify your query dynamically. For example; "select * from customers where created_at >= :#sql_last_value".
 
 ![Schedule form](images/indices-6.png)
+
+## TODO List
+
+- Docker image optimization
