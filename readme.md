@@ -1,491 +1,62 @@
-go mod init github.com/dilaverdemirel/eslasticsearchdatacollector
-go get -u github.com/go-sql-driver/mysql
-go run elasticsearchdatacollector.go
+# Elasticsearch Data Collector
 
-# Features
-Zamanlanmış ya da manuel olarak tetiklenebilecek veri transfer tanımlarına göre verileri RDBMS kaynaklardan
-elasticsearch'e aktaracak yapıyı oluşturmak gerekli.
+## What is the aim of this app?
 
-- Datasource tanımları eklenebilir
-- Index aktarım tanımları eklenebilir
-    - Reload all ya da iterative güncelleme özelliği sağlanabilir
-    - Document ID özelliği sağlanmalı
-- Index aktarım tanımlarına schedule etme özelliği sağlanabilir
+Sometimes, you need to transfer your data that is on a RDBMS to Elasticsearch. **Elasticsearch Data Collector** can help you on that way. You can easily transfer your data to Elasticsearch with a few definitions and sql query.
 
-- SQL preview özelliği eklenebilir
+### What do you need to do this?
+- Create a datasource to retrieve your data
+- Write a sql query and control the result of the query with the data preview feature
+- Create a Elasticsearch index with the sql query
+- Schedule a syncronization
+that's it. 
 
-### Datasource
-Verinin çekileceği database için kullanılacak datasource tanımlarını saklar.
+After that your data will be on the Elasticsearch.
 
-|Column                 |Type            |Description |
-|-----------------------|----------------|------------|
-|id                     | varchar(36)    |            |
-|name                   | varchar(50)    |            |
-|connection_string      | varchar(500)   |            |
-|max_pool_size          | int(3)         |            |
-|min_idle               | int(3)         |            |
-|username               | varchar(50)    |            |
-|db_password            | varchar(100)   | encrypted  |
-|driver_name            | varchar(30)    |            |
+### Starting steps
 
+#### Create a datasource
 
-### Index
-Uygulama tarafından oluşturulan Elasticsearch indexleri ile ilgili bilgileri yöneten tablo.
+Go to the Datasources menu.
 
-|Column                 |Type            |Description |
-|-----------------------|----------------|------------|
-|id                     | varchar(36)    |            |
-|name                   | varchar(50)    |            |
-|alias                  | varchar(70)    | Reload all yüklemelerde yeni oluşturulan indexe verilen alias |
-|description            | varchar(100)   |            |
-|valid                  | varchar(1)     | Y/N        |
-|sql_query              | clob           |            |
-|scheduled              | varchar(1)     | Y/N        |
-|cron_expression        | varchar(100)   |            |
-|last_execution_time    | datetime       |            |
-|sync_type              | varchar(20)    | ITERATIVE/RELOAD_ALL |
-|data_source_id         | varchar(36)    |            |
-|document_field_id      | varchar(36)    | ES indexlemesi sırasında document-id olarak belirlenecek sql field name|
+![Datasources menu](images/datasource-1.png)
 
+Click "Add New" button and fill the form with your database information and save.
 
-### SyncLog
-Syncronizasyon işlemlerini loglamak için kullanılır.
+![Datasource form](images/datasource-2.png)
 
-|Column                 |Type            |Description |
-|-----------------------|----------------|------------|
-|id                     | varchar(36)    |            |
-|index_id               | varchar(36)    |            |
-|document_count         | int(15)        |            |
-|start_time             | datetime       |            |
-|end_time               | datetime       |            |
-|exec_duration_in_sec   | int(15)        |            |
-|status                 | varchar(20)    | STARTED/COMPLETED/FAILED |
-|status_message         | clob           |            |
+You have done. Let's to the next step...
 
-## Eksikler
+#### Create a Elasticsearch index
 
-[-] Db password encode edilecek
+Let's we create a new index.
 
+![Indices menu](images/indices-1.png)
 
+Click "Add New" button and fill the form with your information. You should enter a suitable name lowercase and concatenated with an underscore character. You can enter a description for your index. You must enter a valid sql query to retrieve your data from database. After that you must select your datasource. At this point you can preview your sql query results with clicking preview button.
 
-## End Points
+![Preview results](images/indices-2.png)
 
-### DataSourceController /data-sources
+![Preview results](images/indices-3.png)
 
-#### create POST /data-sources
-**Request:**
-```json
-{
-  "driverClass": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "username": "string"
-}
-```
-**Response:**
-```json
-{
-  "creDate": "2024-01-10T12:12:48.011Z",
-  "creUser": "string",
-  "driverClass": "string",
-  "id": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "orgId": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "updDate": "2024-01-10T12:12:48.011Z",
-  "updUser": "string",
-  "username": "string"
-}
-```
+If everyting is OK, save the index.
 
-#### update PUT /data-sources/{id}
-**Request:**
-```json
-{
-  "driverClass": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "username": "string"
-}
-```
-**Response:**
-```json
-{
-  "creDate": "2024-01-10T12:12:48.011Z",
-  "creUser": "string",
-  "driverClass": "string",
-  "id": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "orgId": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "updDate": "2024-01-10T12:12:48.011Z",
-  "updUser": "string",
-  "username": "string"
-}
-```
+#### Schedule data synchronization
 
-#### getById GET /data-sources/{id}
+Go to the Indices menu and click the edit button on the list.
 
-**Response:**
-```json
-{
-  "creDate": "2024-01-10T12:12:48.011Z",
-  "creUser": "string",
-  "driverClass": "string",
-  "id": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "orgId": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "updDate": "2024-01-10T12:12:48.011Z",
-  "updUser": "string",
-  "username": "string"
-}
-```
+![Indices menu](images/indices-4.png)
 
-#### find GET /data-sources?parameters....
+Click the "Schedule Data Sync" link.
 
-**Response:**
-```json
-[{
-  "creDate": "2024-01-10T12:12:48.011Z",
-  "creUser": "string",
-  "driverClass": "string",
-  "id": "string",
-  "jdbcUrl": "string",
-  "maximumPoolSize": 0,
-  "minimumIdle": 0,
-  "name": "string",
-  "orgId": "string",
-  "password": "string",
-  "type": "RDBMS",
-  "updDate": "2024-01-10T12:12:48.011Z",
-  "updUser": "string",
-  "username": "string"
-}]
-```
+![Schedule form](images/indices-5.png)
 
--------------
+Enter a valid cron expression what you want your synchronization period.
 
-### IndexController /indices
+Enter the "Document Id Field". Document Id field must specify a unique row key in your data.
 
-#### create POST /indices
-**Request:**
-```json
-{
-  "dataSourceId": "string",
-  "description": "string",
-  "fieldMetaData": [
-    {
-      "dataType": "DATE",
-      "fieldName": "string"
-    }
-  ],
-  "indexGenerationQuery": "string",
-  "indexName": "string",
-  "settings": "string"
-}
-```
-**Response:**
-```json
-{
-  "exampleData": [
-    {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    }
-  ],
-  "metaDataList": [
-    {
-      "dataType": "DATE",
-      "fieldName": "string"
-    }
-  ]
-}
-```
+You must select a "Sync Type". There are the synchronization types: "Reload All" and "Iterative". If you select the **reload all** type, your exist data that is on the Elasticsearch will be deleted after synchronization. First, all the data in RDBMS will be transfered to Elasticsearch again. Don't worry. Until the synchronization is completed, your exist data will be reachable. When the synchronization is completed, you can reach the new data. And after that the old data that is on the Elasticsearch will be deleted.
 
-#### update PUT /indices/{id}
-**Request:**
-```json
-{
-  "id": "string",
-  "settings": "string",
-  "valid": true
-}
-```
-**Response:**
-```json
-{
-  "alias": "string",
-  "creDate": "2024-01-10T12:35:45.865Z",
-  "creUser": "string",
-  "cronExpression": "string",
-  "dataSourceId": "string",
-  "description": "string",
-  "documentIdField": "string",
-  "id": "string",
-  "indexGenerationQuery": "string",
-  "lastSyncExecutionDate": "2024-01-10T12:35:45.865Z",
-  "metaData": {
-    "data": "string"
-  },
-  "name": "string",
-  "orgId": "string",
-  "scheduled": true,
-  "settings": {
-    "data": "string"
-  },
-  "syncType": "ITERATIVE",
-  "type": "MANUEL",
-  "updDate": "2024-01-10T12:35:45.865Z",
-  "updUser": "string",
-  "valid": true
-}
-```
+If you select the **Iterative type**, you can only retrieve the data that is changed from after last synchronization time. To do that you can use the special keyword ":#sql_last_value" to modify your query dynamically. For example; "select * from customers where created_at >= :#sql_last_value".
 
-#### delete DELETE /indices/{id}
-
-
-#### scheduleIndexDataSync PUT /indices/{id}/schedule-data-sync
-**Request:**
-```json
-{
-  "cronExpression": "string",
-  "documentIdField": "string",
-  "indexId": "string",
-  "syncType": "ITERATIVE"
-}
-```
-**Response:**
-```json
-{
-  "alias": "string",
-  "creDate": "2024-01-10T12:35:45.865Z",
-  "creUser": "string",
-  "cronExpression": "string",
-  "dataSourceId": "string",
-  "description": "string",
-  "documentIdField": "string",
-  "id": "string",
-  "indexGenerationQuery": "string",
-  "lastSyncExecutionDate": "2024-01-10T12:35:45.865Z",
-  "metaData": {
-    "data": "string"
-  },
-  "name": "string",
-  "orgId": "string",
-  "scheduled": true,
-  "settings": {
-    "data": "string"
-  },
-  "syncType": "ITERATIVE",
-  "type": "MANUEL",
-  "updDate": "2024-01-10T12:35:45.865Z",
-  "updUser": "string",
-  "valid": true
-}
-```
-
-#### unscheduleIndexDataSync DELETE /indices/{id}/unschedule-data-sync
-
-**Response:**
-```json
-{
-  "alias": "string",
-  "creDate": "2024-01-10T12:35:45.865Z",
-  "creUser": "string",
-  "cronExpression": "string",
-  "dataSourceId": "string",
-  "description": "string",
-  "documentIdField": "string",
-  "id": "string",
-  "indexGenerationQuery": "string",
-  "lastSyncExecutionDate": "2024-01-10T12:35:45.865Z",
-  "metaData": {
-    "data": "string"
-  },
-  "name": "string",
-  "orgId": "string",
-  "scheduled": true,
-  "settings": {
-    "data": "string"
-  },
-  "syncType": "ITERATIVE",
-  "type": "MANUEL",
-  "updDate": "2024-01-10T12:35:45.865Z",
-  "updUser": "string",
-  "valid": true
-}
-```
-
-
-#### getById GET /indices/{id}
-
-**Response:**
-```json
-{
-  "alias": "string",
-  "creDate": "2024-01-10T12:35:45.865Z",
-  "creUser": "string",
-  "cronExpression": "string",
-  "dataSourceId": "string",
-  "description": "string",
-  "documentIdField": "string",
-  "id": "string",
-  "indexGenerationQuery": "string",
-  "lastSyncExecutionDate": "2024-01-10T12:35:45.865Z",
-  "metaData": {
-    "data": "string"
-  },
-  "name": "string",
-  "orgId": "string",
-  "scheduled": true,
-  "settings": {
-    "data": "string"
-  },
-  "syncType": "ITERATIVE",
-  "type": "MANUEL",
-  "updDate": "2024-01-10T12:35:45.865Z",
-  "updUser": "string",
-  "valid"
-}
-```
-
-#### find GET /indices?parameters....
-
-**Response:**
-```json
-[{
-  "alias": "string",
-  "creDate": "2024-01-10T12:35:45.865Z",
-  "creUser": "string",
-  "cronExpression": "string",
-  "dataSourceId": "string",
-  "description": "string",
-  "documentIdField": "string",
-  "id": "string",
-  "indexGenerationQuery": "string",
-  "lastSyncExecutionDate": "2024-01-10T12:35:45.865Z",
-  "metaData": {
-    "data": "string"
-  },
-  "name": "string",
-  "orgId": "string",
-  "scheduled": true,
-  "settings": {
-    "data": "string"
-  },
-  "syncType": "ITERATIVE",
-  "type": "MANUEL",
-  "updDate": "2024-01-10T12:35:45.865Z",
-  "updUser": "string",
-  "valid"
-}]
-```
-
--------------
-
-### QueryMetaDataController /query-meta-data
-
-#### preview POST /query-meta-data/preview
-**Request:**
-```json
-{
-  "dataSourceId": "string",
-  "query": "string"
-}
-```
-**Response:**
-```json
-{
-  "exampleData": [
-    {
-      "additionalProp1": {},
-      "additionalProp2": {},
-      "additionalProp3": {}
-    }
-  ],
-  "metaDataList": [
-    {
-      "dataType": "DATE",
-      "fieldName": "string"
-    }
-  ]
-}
-```
-
--------------
-
-### SynchronizationController /synchronization
-
-#### start POST /synchronization/{indexId}/start
-
-#### find GET /query-meta-data/logs?parameters
-
-**Response:**
-```json
-{
-  "content": [
-    {
-      "creDate": "2024-01-10T12:46:42.876Z",
-      "creUser": "string",
-      "documentCount": 0,
-      "endDate": "2024-01-10T12:46:42.876Z",
-      "executionDuration": 0,
-      "id": "string",
-      "indexId": "string",
-      "orgId": "string",
-      "startDate": "2024-01-10T12:46:42.876Z",
-      "status": "COMPLETED",
-      "statusMessage": "string",
-      "updDate": "2024-01-10T12:46:42.876Z",
-      "updUser": "string"
-    }
-  ],
-  "empty": true,
-  "first": true,
-  "last": true,
-  "number": 0,
-  "numberOfElements": 0,
-  "pageable": {
-    "offset": 0,
-    "pageNumber": 0,
-    "pageSize": 0,
-    "paged": true,
-    "sort": {
-      "empty": true,
-      "sorted": true,
-      "unsorted": true
-    },
-    "unpaged": true
-  },
-  "size": 0,
-  "sort": {
-    "empty": true,
-    "sorted": true,
-    "unsorted": true
-  },
-  "totalElements": 0,
-  "totalPages": 0
-}
-```
+![Schedule form](images/indices-6.png)
