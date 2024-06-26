@@ -93,6 +93,12 @@ If you select the **Iterative type**, you can only retrieve the data that is cha
 
 ![Schedule form](images/indices-6.png)
 
+## Run it
+
+```shell
+docker run --name es-data-collector-app -p 8080:8080 -p 3000:3000 -e ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS='http://192.168.1.52:9200' -e ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING='root:root@tcp(192.168.1.52:3306)/es-data-collector?parseTime=true' ddemirel/elasticsearch-data-collector:tagname
+```
+
 ## TODO List
 
 - Docker image optimization
