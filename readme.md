@@ -99,6 +99,10 @@ If you select the **Iterative type**, you can only retrieve the data that is cha
 docker run --name es-data-collector-app -p 8080:8080 -p 3000:3000 -e ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS='http://192.168.1.52:9200' -e ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING='root:root@tcp(192.168.1.52:3306)/es-data-collector?parseTime=true' ddemirel/elasticsearch-data-collector:tagname
 ```
 
+You can access 
+the UI with http://localhost:3000
+and the API with http://localhost:8080
+
 ## TODO List
 
 - Docker image optimization
