@@ -115,6 +115,14 @@ export default function IndexForm() {
       event.stopPropagation();
     } else {
       console.log("Scheduling.......")
+
+      const cronValidationRegex = /^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\d+(ns|us|µs|ms|s|m|h))+)|((((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\?|\*) ?){6,7})$/;
+
+      if (!cronValidationRegex.test(scheduleIndex.CronExpression)) {
+        toast.error("Your cron expression format is invalid!");
+        return
+      }
+
       scheduleIndexDataSync(scheduleIndex)
         .then((res) => {
           console.log(res.status)

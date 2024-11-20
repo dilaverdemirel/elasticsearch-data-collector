@@ -4,6 +4,9 @@
 
 FROM golang:1.21.6-alpine3.19
 
+RUN apk --no-cache add tzdata
+ENV TZ=Europe/Istanbul
+
 # Set destination for COPY
 WORKDIR /app
 

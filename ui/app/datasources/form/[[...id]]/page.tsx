@@ -183,15 +183,18 @@ export default function DatasourceForm() {
         <Row className="mb-3">
           <Form.Group as={Col} className="mb-3">
             <Form.Label>Driver Name</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="mysql"
+            <Form.Select aria-label="Default select example"
               value={datasource.DriverName}
               onChange={(e) => {
                 setDatasource({ ...datasource, DriverName: e.target.value })
               }}
-            />
+            >
+              <option></option>
+              <option value="postgres">Postgresql</option>
+              <option value="sqlserver">Microsoft SQL Server</option>
+              <option value="mysql">MySQL</option>
+              <option value="oracle">Oracle</option>
+            </Form.Select>
           </Form.Group>
         </Row>
 

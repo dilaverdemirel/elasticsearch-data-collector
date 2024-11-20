@@ -23,13 +23,13 @@ func InitializeSchedulerAndActivateJobs() {
 	var worker string = "worker-" + uuid.NewString()
 	var locker, err = gormlock.NewGormLocker(dao.DB, worker)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// create a scheduler
 	scheduler, err := gocron.NewScheduler(gocron.WithDistributedLocker(locker))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	SCHEDULER = scheduler
 
@@ -62,7 +62,7 @@ func add_new_job_to_scheduler_by_index(index model.Index) {
 		gocron.WithTags(index.ID),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	// each job has a unique id
 	log.Println("Job ID : ", j.ID())
@@ -84,7 +84,7 @@ func One_time_schedule_by_index_id(index_id string) {
 		gocron.WithTags(index_id),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	// each job has a unique id
 	log.Println("OneTime Job ID : ", j.ID())

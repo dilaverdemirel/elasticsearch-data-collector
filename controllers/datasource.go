@@ -32,6 +32,8 @@ func DeleteDatasourceById(c *gin.Context) {
 	var datasource model.Datasource
 	dao.DB.Where(&model.Datasource{ID: id}).Delete(&datasource)
 
+	dao.ClearDatabaseConnectionCacheByDatasourceId(datasource.ID)
+
 	c.JSON(http.StatusNoContent, datasource)
 }
 
@@ -91,6 +93,8 @@ func UpdateDatasource(c *gin.Context) {
 	})
 
 	dao.DB.Where(&model.Datasource{ID: id}).Take(&datasource)
+
+	dao.ClearDatabaseConnectionCacheByDatasourceId(datasource.ID)
 
 	c.JSON(http.StatusOK, datasource)
 }

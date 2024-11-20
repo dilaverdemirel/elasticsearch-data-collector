@@ -26,12 +26,18 @@
     rgb(var(--background-start-rgb));
 } */
 
-[type=button], [type=reset], [type=submit], button{
+/* [type=button], [type=reset], [type=submit], button{
   background-color: 'rgb(var(--bs-btn-bg))' !important;
-}
+} */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+[type=button], [type=reset], [type=submit], button {
+  -webkit-appearance: button;
+  background-color: var(--bs-btn-bg) !important;
+  background-image: none;
 }

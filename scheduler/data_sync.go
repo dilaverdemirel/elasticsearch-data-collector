@@ -20,11 +20,13 @@ import (
 
 func Sync(index_id string) {
 	var index = service.GetIndexById(index_id)
+	log.Default().Println("Data sync is started for index :" + index_id + "/" + index.Name)
 	var sync_log = model.SyncLog{
 		IndexId:   index_id,
 		StartDate: time.Now(),
 		Status:    model.SyncLogStatusStarted,
 	}
+
 	service.CreateSyncLog(&sync_log)
 
 	data_source := dao.ConnectDatabaseWithDefinedDatasource(index.DataSourceId)
@@ -50,11 +52,10 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 		return -1, err
 	}
 
-	indexer, _ := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{})
 	var id_field string = index.DocumentField
 	var record_count int32 = 0
-	row_list := dao.ScanRowsWithoutRowLimit(*rows)
-	rows.Close()
+	ch := make(chan map[string]interface{})
+	go dao.ScanRowsWithoutRowLimit(*rows, ch)
 
 	var index_name = index.Name
 	if index.SyncType == model.IndexSyncTypeReloadAll {
@@ -64,12 +65,32 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 		}
 	}
 
-	for l := row_list.Front(); l != nil; l = l.Next() {
+	es_connection := elasticsearch.ES
+	indexer, _ := esutil.NewBulkIndexer(
+		esutil.BulkIndexerConfig{
+			Client:        es_connection, // The Elasticsearch client
+			ErrorTrace:    true,
+			Timeout:       180 * time.Second,
+			FlushInterval: 5 * time.Second,
+			FlushBytes:    1e+6, // The flush threshold in bytes (default: 5M)
+			OnError: func(ctx context.Context, err error) {
+				if err != nil {
+					log.Println(err)
+				}
+			},
+			NumWorkers: 5,
+		})
+
+	for {
+		l, ok := <-ch
+		if !ok {
+			break
+		}
 		row := make(map[string]interface{})
 		var id_value string = ""
 		for i := 0; i < len(colNames); i++ {
 			col_name := colNames[i]
-			value := l.Value.(map[string]interface{})[col_name]
+			value := l[col_name]
 			row[col_name] = value
 			if id_field == col_name {
 				id_value = ConvertGenericTypeDataToString(value)
@@ -81,7 +102,7 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 			return -1, err
 		}
 
-		indexer.Add(
+		err = indexer.Add(
 			context.Background(),
 			esutil.BulkIndexerItem{
 				Index:      index_name,
@@ -90,18 +111,21 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 				Body:       strings.NewReader(string(jsonString)),
 				OnFailure: func(ctx context.Context, bii esutil.BulkIndexerItem, biri esutil.BulkIndexerResponseItem, err error) {
 					if err != nil {
-						log.Fatal(err)
+						log.Println(err)
 					}
 				},
 			})
+		if err != nil {
+			log.Printf("Unexpected error: %s", err)
+		}
 		record_count++
-		if record_count%500 == 0 {
-			log.Println("Record count : ", record_count)
+		if record_count%10_000 == 0 {
+			log.Printf("Sync is continue for index %s, Record count: %d", index.Name, record_count)
 		}
 	}
+	rows.Close()
 
-	log.Println("Record count : ", record_count)
-	log.Println("Index stats, Added :", indexer.Stats().NumAdded,
+	log.Println("Sync(Index:"+index.ID+"/"+index.Name+") stats, Added :", indexer.Stats().NumAdded,
 		",Created : ", indexer.Stats().NumCreated,
 		",Deleted : ", indexer.Stats().NumDeleted,
 		",Failed : ", indexer.Stats().NumFailed,
@@ -110,12 +134,19 @@ func migrate_data_to_elasticsearch(data_source *sqlx.DB, index *model.Index) (in
 		",Requests : ", indexer.Stats().NumRequests,
 		",Updated : ", indexer.Stats().NumUpdated,
 	)
-	indexer.Close(context.Background())
+
+	if err := indexer.Close(context.Background()); err != nil {
+		log.Printf("Unexpected error: %s", err)
+	}
 	complete_reload_all_data_import(*index, index_name)
 	return record_count, nil
 }
 
 func ConvertGenericTypeDataToString(value interface{}) string {
+	if value == nil {
+		return ""
+	}
+
 	field_data_type := reflect.TypeOf(value).String()
 	switch field_data_type {
 	case "int", "int8", "int16", "int32", "int64":
@@ -127,7 +158,8 @@ func ConvertGenericTypeDataToString(value interface{}) string {
 	case "string":
 		return value.(string)
 	default:
-		panic("Data can't convert to expected value!")
+		log.Println("Data can't convert to expected value!")
+		return ""
 	}
 }
 
@@ -154,7 +186,7 @@ type SQLMetaData struct {
 }
 
 func prepare_sql_query_meta_data(index model.Index) SQLMetaData {
-	var sql_query = strings.ToLower(index.SqlQuery)
+	var sql_query = index.SqlQuery
 	var contains_sql_last_value = false
 	var sql_last_value_count = 0
 	var sql_last_value_pattern = ":#sql_last_value"
@@ -232,7 +264,7 @@ func DeleteElasticsearchIndex(index_id string) {
 	var index = service.GetIndexById(index_id)
 	index_delete_response, err := elasticsearch.ES.Indices.Delete([]string{index.Alias})
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	if index_delete_response.StatusCode == 200 {
 		log.Printf("Index was deleted successfuly")

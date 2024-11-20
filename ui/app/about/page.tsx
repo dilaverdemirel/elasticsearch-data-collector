@@ -22,11 +22,9 @@ export default function About() {
 
     <Card>
       <Card.Body>
-        <Card.Title>What is the aim of this app?</Card.Title>
+        <Card.Title>Elasticsearch Data Collector</Card.Title>
         <Card.Text>
-          Sometimes, you need to transfer your data that is on a RDBMS to Elasticsearch. <b>Elasticsearch Data Collector</b> can help you on that way.
-
-          You can easily transfer your data to Elasticsearch with a few definitions and sql query.
+          You can easily transfer your data to Elasticsearch Data Collector with a few definitions and sql query.
         </Card.Text>
       </Card.Body>
 
@@ -34,9 +32,8 @@ export default function About() {
         <ListGroup.Item><b>What do you need to do this?</b></ListGroup.Item>
         <ListGroup.Item>- Create a datasource to retrieve your data</ListGroup.Item>
         <ListGroup.Item>- Write a sql query and control the result of the query with the data preview feature</ListGroup.Item>
-        <ListGroup.Item>- Create a Elasticsearch index with the sql query</ListGroup.Item>
         <ListGroup.Item>- Schedule a syncronization</ListGroup.Item>
-        <ListGroup.Item>that's it. After that your data will be on the Elasticsearch.</ListGroup.Item>
+        <ListGroup.Item>that's it. After that your data will be on the Elasticsearch Data Collector.</ListGroup.Item>
       </ListGroup>
 
       <Card.Body>
@@ -57,11 +54,44 @@ export default function About() {
             <br />
             <Image src="about/images/datasource-2.png" thumbnail alt="." />
             <br />
+
+            <b>Postgresql Config Example</b>
+            <p>
+              <ul>
+              <li><b>Connection String :</b>user=#USER# dbname=postgres sslmode=disable password=#PWD# host=192.168.1.60</li>
+              <li><b>Driver Name :</b>postgres</li>
+              </ul>
+            </p>
+
+            <b>MSSQL Config Example</b>
+            <p>
+              <ul>
+              <li><b>Connection String :</b>server=localhost;user id=#USER#;password=#PWD#;database=master;</li>
+              <li><b>Driver Name :</b>sqlserver</li>
+              </ul>
+            </p>
+
+            <b>MySQL Config Example</b>
+            <p>
+              <ul>
+              <li><b>Connection String :</b>tcp(127.0.0.1:3306)/es-data-collector?parseTime=true</li>
+              <li><b>Driver Name :</b>mysql</li>
+              </ul>
+            </p>
+
+            <b>Oracle Config Example</b>
+            <p>
+              <ul>
+              <li><b>Connection String :</b>localhost:49161/xe</li>
+              <li><b>Driver Name :</b>oracle</li>
+              </ul>
+            </p>
+
             You have done. Let's to the next step...
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="1">
-          <Accordion.Header>#2 Create a Elasticsearch index</Accordion.Header>
+          <Accordion.Header>#2 Create a Index</Accordion.Header>
           <Accordion.Body>
             Let's we create a new index.
             <br />
@@ -101,9 +131,9 @@ export default function About() {
             <br />
             <br />
             You must select a "Sync Type". There are the synchronization types: "Reload All" and "Iterative". If you select the <b>reload all</b> type,
-            your exist data that is on the Elasticsearch will be deleted after synchronization. First, all the data in RDBMS will be transfered to Elasticsearch again.
+            your exist data that is on the Elasticsearch Data Collector will be deleted after synchronization. First, all the data in RDBMS will be transfered to Elasticsearch Data Collector again.
             Don't worry. Until the synchronization is completed, your exist data will be reachable. When the synchronization is completed, you can reach the new data.
-            And after that the old data that is on the Elasticsearch will be deleted.
+            And after that the old data that is on the Elasticsearch Data Collector will be deleted.
             <br />
             <br />
             If you select the <b>Iterative type</b>, you can only retrieve the data that is changed from after last synchronization time. To do that you can use the special keyword ":#sql_last_value"

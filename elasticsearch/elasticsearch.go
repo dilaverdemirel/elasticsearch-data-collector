@@ -26,19 +26,22 @@ func ConnectElasticsearch() {
 		},
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost:   10,
-			ResponseHeaderTimeout: time.Second,
-			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
+			ResponseHeaderTimeout: 180 * time.Second, //flush: net/http: timeout awaiting response headers hatası için arttırıldı
+			DialContext:           (&net.Dialer{Timeout: 90 * time.Second}).DialContext,
 		},
+		RetryOnStatus: []int{502, 503, 504, 429},
+		RetryBackoff:  func(i int) time.Duration { return time.Duration(i) * 2000 * time.Millisecond },
+		MaxRetries:    5,
 	}
 
 	var es, err = elasticsearch.NewClient(cfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	info, err := es.Info()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	fmt.Println("Cluseter info : ", info)
 

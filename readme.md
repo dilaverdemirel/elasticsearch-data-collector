@@ -24,6 +24,9 @@ Supported databases:
 | Name |
 |------|
 |MySQL |
+|Oracle |
+|MSSQL |
+|Postgresql |
 
 Environment variables:
 

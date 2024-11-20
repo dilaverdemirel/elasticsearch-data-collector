@@ -1,0 +1,40 @@
+services:
+
+  # Mysql
+  db:
+    container_name: smarty-cubes-data-client-db
+    image: mysql:8.1.0
+    cap_add:
+      - SYS_NICE
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: data-client
+      MYSQL_ROOT_PASSWORD: data-client-root-pwd
+    volumes:
+      - db:/var/lib/mysql
+
+  # Data Client
+  smarty-cubes-data-client:
+    image: es-data-collector-app
+    container_name: smarty-cubes-data-client-app
+    depends_on:
+      - db
+    environment:
+      - TZ=Europe/Istanbul
+      - ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING=root:data-client-root-pwd@tcp(db:3306)/data-client?parseTime=true
+      - ES_DATA_COLLECTOR_CLOUD_APP_USER_NAME=smarty-cubes-data-client
+      - ES_DATA_COLLECTOR_CLOUD_APP_USER_PASSWORD=Admin003
+      - ES_DATA_COLLECTOR_CLOUD_APP_CLIENT_ID=smarty-cube
+      - ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS=http://192.168.1.52:9200
+      - ES_DATA_COLLECTOR_APP_DB_WAIT_CONNECTION=true
+    ports:
+      - "8080:8080"
+      - "3001:3000"
+    links:
+      - db
+
+# Volume definition for persistent data
+volumes:
+  db:
+    driver: local

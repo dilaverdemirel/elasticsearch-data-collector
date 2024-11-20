@@ -21,44 +21,56 @@ func PreviewQueryMetaData(c *gin.Context) {
 	rows, err := db_connection.Queryx(input.Query)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	colNames, err := rows.Columns()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	colTypes, err := rows.ColumnTypes()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	var meta_output model.QueryPreviewOutput
 	meta_items := make([]model.FieldMetaData, len(colNames))
 	for i := 0; i < len(colNames); i++ {
+		var dataType = colTypes[i].DatabaseTypeName()
+		switch colTypes[i].DatabaseTypeName() {
+		case "INT", "INT4", "BIGINT", "DECIMAL", "FLOAT4", "FLOAT8", "NUMBER":
+			dataType = "NUMERIC"
+		case "VARCHAR", "NVARCHAR", "BOOL", "NCHAR", "CHAR", "LongVarChar", "LONGVARCHAR":
+			dataType = "TEXT"
+		}
 		var meta model.FieldMetaData
-		meta.DataType = colTypes[i].DatabaseTypeName()
+		meta.DataType = dataType
 		meta.FieldName = colNames[i]
 		meta_items[i] = meta
 	}
 	meta_output.MetaDataList = meta_items
 
-	row_list := dao.ScanRows(*rows, 100)
-	rows.Close()
-	//row_list.Remove(nil)
+	ch := make(chan map[string]interface{})
+	go dao.ScanRows(*rows, 100, ch)
 
-	meta_data_items := make([]map[string]interface{}, row_list.Len())
+	meta_data_items := make([]map[string]interface{}, 100)
 	var row_index = 0
-	for l := row_list.Front(); l != nil; l = l.Next() {
+	for {
+		l, ok := <-ch
+		if !ok {
+			break
+		}
 		row := make(map[string]interface{})
 		for i := 0; i < len(colNames); i++ {
 			col_name := colNames[i]
-			row[col_name] = l.Value.(map[string]interface{})[col_name]
+			row[col_name] = l[col_name]
 		}
 		meta_data_items[row_index] = row
 		row_index++
 	}
-	meta_output.ExampleData = meta_data_items
+
+	rows.Close()
+	meta_output.ExampleData = meta_data_items[:row_index]
 
 	//----------------------------
 
