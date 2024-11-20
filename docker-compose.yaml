@@ -2,7 +2,7 @@ services:
 
   # Mysql
   db:
-    container_name: smarty-cubes-data-client-db
+    container_name: elasticsearch-data-collector-db
     image: mysql:8.1.0
     cap_add:
       - SYS_NICE
@@ -15,9 +15,9 @@ services:
       - db:/var/lib/mysql
 
   # Data Client
-  smarty-cubes-data-client:
+  elasticsearch-data-collector:
     image: ddemirel/elasticsearch-data-collector:tagname
-    container_name: smarty-cubes-data-client-app
+    container_name: elasticsearch-data-collector-app
     depends_on:
       - db
     environment:
