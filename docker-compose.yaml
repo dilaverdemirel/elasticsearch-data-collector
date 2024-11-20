@@ -23,9 +23,6 @@ services:
     environment:
       - TZ=Europe/Istanbul
       - ES_DATA_COLLECTOR_APP_DB_CONNECTION_STRING=root:data-client-root-pwd@tcp(db:3306)/data-client?parseTime=true
-      - ES_DATA_COLLECTOR_CLOUD_APP_USER_NAME=smarty-cubes-data-client
-      - ES_DATA_COLLECTOR_CLOUD_APP_USER_PASSWORD=Admin003
-      - ES_DATA_COLLECTOR_CLOUD_APP_CLIENT_ID=smarty-cube
       - ES_DATA_COLLECTOR_ELASTICSEARH_ADDRESS=http://192.168.1.52:9200
       - ES_DATA_COLLECTOR_APP_DB_WAIT_CONNECTION=true
     ports:
