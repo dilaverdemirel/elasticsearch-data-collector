@@ -16,7 +16,7 @@ services:
 
   # Data Client
   smarty-cubes-data-client:
-    image: es-data-collector-app
+    image: ddemirel/elasticsearch-data-collector:tagname
     container_name: smarty-cubes-data-client-app
     depends_on:
       - db
